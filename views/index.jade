@@ -1,0 +1,9 @@
+extends layout
+
+block content
+	h1 Welcome #{user.displayName}!
+	if user && !user.isGuest
+		a(href="/account") Profile
+		a(href="/account/logout") Logout
+	else
+		a(href="/account/login") Login
