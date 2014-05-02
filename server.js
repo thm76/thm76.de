@@ -14,15 +14,15 @@ var express = require("express")
 	;
 
 var ROOT = config.AppRoot || __dirname;
-var LIBROOT = ROOT+ "/lib";
-var ROUTERROOT = ROOT + "/routers";
+var LIBROOT = path.join(ROOT, "lib");
+var ROUTERROOT = path.join(ROOT, "routers");
 
 mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 	if (err) throw err;
 
 	var app = express();
 	app.set("view engine", "jade");
-	app.set("views", ROOT + "/views");
+	app.set("views", path.join(ROOT, "views"));
 	app.enable("trust proxy");
 
 	// passport
@@ -48,14 +48,14 @@ mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 		})
 	});
 
-	var auth = require(LIBROOT + "/auth.js")(passport);
+	var auth = require(path.join(LIBROOT, "auth.js")(passport);
 
 	// middleware
 	app.use(lessMiddleware(path.join(ROOT, "public")));
 	app.use(express.static(path.join(ROOT, "public")));
 	app.use(bodyParser());
 	app.use(cookieParser());
-	app.use(session({ secret: "not so secret" }));
+	app.use(session({ secret: "$2a$10$GhPIA5v8jDhI1CDpdhLLRu" }));
 	app.use(passport.initialize());
 	app.use(passport.session());
 	app.use(auth.userOrGuest);
@@ -65,8 +65,8 @@ mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 	});
 
 	// routes
-	app.use("/", require(ROUTERROOT + "/root.js")(express));
-	app.use("/account", require(ROUTERROOT + "/account.js")(express, passport, auth));
+	app.use("/", require(path.join(ROUTERROOT, "root.js")(express));
+	app.use("/account", require(path.join(ROUTERROOT, "account.js")(express, passport, auth));
 
 	// error handling
 	app.use(function(err, req, res, next) {
