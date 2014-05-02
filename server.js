@@ -1,18 +1,23 @@
 var express = require("express")
 	, config = require("config").App
+	, mongodb = require("mongodb")
 	, bodyParser = require("body-parser")
 	, cookieParser = require("cookie-parser")
 	, session = require("express-session")
 	, passport = require("passport")
 	, LocalStrategy = require("passport-local").Strategy
 	, AnonymousStrategy = require("passport-anonymous").Strategy
+	, lessMiddleware = require("less-middleware")
+	, bcrypt = require("bcrypt")
+	, util = require("util")
+	, path = require("path")
 	;
 
 var ROOT = config.AppRoot || __dirname;
 var LIBROOT = ROOT+ "/lib";
 var ROUTERROOT = ROOT + "/routers";
 
-require("pg").connect(config.PgConnectString, function(err, db, done) {
+mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 	if (err) throw err;
 
 	var app = express();
@@ -23,26 +28,31 @@ require("pg").connect(config.PgConnectString, function(err, db, done) {
 	// passport
 	passport.use(new LocalStrategy(function(username, password, done) {
 		console.log("Authenticating " + username + " with password " + password);
-		if (username === "thomas" && password === "password") {
-			return done(null, {
-				displayName: username,
-				isGuest: false
-			});
-		}
-		return done(null, false);
+
+		db.collection("users").findOne({name: username}, function(err, user) {
+			if (!user) {
+				return done(null, false);
+			} else if (bcrypt.compareSync(password, user.hash)) {
+				return done(null, user);
+			}
+			return done(null, false);			
+		});
 	}));
 	passport.use(new AnonymousStrategy());
 	passport.serializeUser(function(user, done) {
-		done(null, user);
+		done(null, user._id);
 	});
 	passport.deserializeUser(function(obj, done) {
-		done(null, obj);
+		db.collection("users").findOne({ _id: mongodb.ObjectID(obj) }, function(err, user) {
+			done(null, user);
+		})
 	});
 
 	var auth = require(LIBROOT + "/auth.js")(passport);
 
 	// middleware
-	app.use(express.static(ROOT + "/public"));
+	app.use(lessMiddleware(path.join(ROOT, "public")));
+	app.use(express.static(path.join(ROOT, "public")));
 	app.use(bodyParser());
 	app.use(cookieParser());
 	app.use(session({ secret: "not so secret" }));
@@ -50,7 +60,7 @@ require("pg").connect(config.PgConnectString, function(err, db, done) {
 	app.use(passport.session());
 	app.use(auth.userOrGuest);
 	app.use(function(req, res, next) {
-		console.log(req.method, req.url, req.query, req.body, req.user);
+		console.log(req.method, req.url, req.query, req.body);
 		next();
 	});
 

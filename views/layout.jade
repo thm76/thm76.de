@@ -2,5 +2,13 @@ doctype html
 html
 	head
 		title thm76.de
+		link(rel="stylesheet", href="/css/main.css")
 	body
+		.navbar
+			ul.account
+				if user
+					li: a(href="/account/") My Profile
+					li: a(href="/account/logout") Logout
+				else
+					li: a(href="/account/login") Login
 		block content

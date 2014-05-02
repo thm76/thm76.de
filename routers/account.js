@@ -21,7 +21,7 @@ module.exports = function(express, passport, auth) {
 	router.route("/")
 		.all(auth.userOnly)
 		.get(function(req, res) {
-			res.send("account /");
+			res.render("account/index", { user: req.user });
 		});
 
 	return router;
