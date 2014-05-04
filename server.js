@@ -48,7 +48,7 @@ mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 		})
 	});
 
-	var auth = require(path.join(LIBROOT, "auth.js")(passport);
+	var auth = require(path.join(LIBROOT, "auth.js"))(passport);
 
 	// middleware
 	app.use(lessMiddleware(path.join(ROOT, "public")));
@@ -65,8 +65,8 @@ mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 	});
 
 	// routes
-	app.use("/", require(path.join(ROUTERROOT, "root.js")(express));
-	app.use("/account", require(path.join(ROUTERROOT, "account.js")(express, passport, auth));
+	app.use("/", require(path.join(ROUTERROOT, "root.js"))(express));
+	app.use("/account", require(path.join(ROUTERROOT, "account.js"))(express, passport, auth));
 
 	// error handling
 	app.use(function(err, req, res, next) {
