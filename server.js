@@ -29,7 +29,7 @@ mongodb.MongoClient.connect(config.MongoConnectString, function(err, db) {
 	passport.use(new LocalStrategy(function(username, password, done) {
 		console.log("Authenticating " + username + " with password " + password);
 
-		db.collection("users").findOne({name: username}, function(err, user) {
+		db.collection("users").findOne({email: username}, function(err, user) {
 			if (!user) {
 				return done(null, false);
 			} else if (bcrypt.compareSync(password, user.hash)) {

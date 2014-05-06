@@ -2,8 +2,3 @@ extends layout
 
 block content
 	h1 Welcome #{user ? user.displayName : "Guest"}!
-	if user
-		a(href="/account") Profile
-		a(href="/account/logout") Logout
-	else
-		a(href="/account/login") Login

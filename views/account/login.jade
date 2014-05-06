@@ -1,8 +1,16 @@
 extends ../layout
 
 block content
-	h1 Login
-	form(method="post", action="login")
-		input(type="text", name="username", value="thomas")
-		input(type="password", name="password", value="password")
-		input(type="submit", value+"Login")
+	.row
+		.col-md-offset-4.col-md-4
+			.panel.panel-primary
+				.panel-heading Login
+				.panel-body
+					form(method="post", action="login", role="form")
+						.form-group
+							label(for="username") Email
+							input.form-control(type="email", id="username", name="username", placeholder="Email", value="thomas")
+						.form-group
+							label(for="password") Password
+							input.form-control(type="password", id="password", name="password", placeholder="Password", value="password")
+						button.btn.btn-primary.pull-right(type="submit") Login

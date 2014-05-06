@@ -1,14 +1,31 @@
 doctype html
-html
+html(lang="en" ng-app="app")
 	head
 		title thm76.de
-		link(rel="stylesheet", href="/css/main.css")
+
+		link(rel="stylesheet" href="/css/bootstrap.min.css")
+		link(rel="stylesheet" href="/css/bootstrap-theme.min.css")
+
+		link(rel="stylesheet" href="/css/main.css")
+
+		script(src="/js/angular.min.js")
+		script(src="/js/ui-bootstrap-tpls.min.js")
 	body
-		.navbar
-			ul.account
-				if user
-					li: a(href="/account/") My Profile
-					li: a(href="/account/logout") Logout
-				else
-					li: a(href="/account/login") Login
-		block content
+		.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+			.container
+				.navbar-header
+					a.navbar-brand(href="/") boxof.photos
+				.navbar-collapse.collapse
+					ul.nav.navbar-nav.navbar-right
+						if user
+							li: a(href="/account") Profile
+							li
+								button.btn.btn-default.navbar-btn.btn-sm
+									a(href="/account/logout") Logout
+						else
+							li: a(href="/account/signup") Signup
+							li
+								button.btn.btn-default.navbar-btn.btn-sm
+									a(href="/account/login") Login
+		.container
+			block content
