@@ -7,14 +7,14 @@ block content
 				.panel-heading Signup
 				.panel-body
 					form(method="post", action="signup", role="form")
-						if invitationCode
-							input(type="hidden" name="invitationCode" value=invitationCode)
+						if invitation
+							input(type="hidden" name="invitationCode" value=invitation.code)
 						.form-group
 							label(for="displayName") Display Name
-							input.form-control(type="text" id="displayName" name="displayName" placeholder="Display Name")
+							input.form-control(type="text" id="displayName" name="displayName" placeholder="Display Name" value=(invitation && invitation.displayName ? invitation.displayName : ""))
 						.form-group
 							label(for="email") Email
-							input.form-control(type="email" id="email"  name="email"  placeholder="Email")
+							input.form-control(type="email" id="email"  name="email"  placeholder="Email" value=(invitation && invitation.email ? invitation.email : ""))
 						.form-group
 							label(for="password") Password
 							input.form-control(type="password" id="password" name="password" placeholder="Password")

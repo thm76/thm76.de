@@ -1,6 +1,6 @@
+var util = require("util");
 
-
-module.exports = function(express, passport, auth) {
+module.exports = function(express, passport, auth, Models) {
 	var router = express.Router();
 
 	router.route("/login")
@@ -14,8 +14,13 @@ module.exports = function(express, passport, auth) {
 		});
 	router.route("/signup/:invitationCode?")
 		.get(function(req, res) {
-			console.log(req.params.invitationCode);
-			res.render("account/signup", { invitationCode: req.params.invitationCode });
+			if (req.params.invitationCode) {
+				Models.Invitation.findOne({code: req.params.invitationCode}, function(err, invitation) {
+					res.render("account/signup", { invitation: invitation });
+				})
+			} else {
+				res.render("account/signup", { });
+			}
 		})
 		.post(function(req, res) {
 			console.log("signup post", req.body);
@@ -29,7 +34,14 @@ module.exports = function(express, passport, auth) {
 
 	router.route("/")
 		.all(auth.userOnly)
+		.all(function(req, res, next) {
+			Models.Invitation.findOutstandingByInvitedById(req.user._id, function(err, invitations) {
+				req.user.invitations = invitations;
+				next();
+			})
+		})
 		.get(function(req, res) {
+			console.log(util.inspect(req.user));
 			res.render("account/index", { user: req.user });
 		});
 

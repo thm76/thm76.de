@@ -2,4 +2,19 @@ extends ../layout.jade
 
 block content
 	h1 User Profile
-	| Welcome back, #{user.displayName}.
+		span.small  Welcome back, #{user.displayName}.
+	.row
+		.col-md-3
+			.list-group
+				a.list-group-item Profile
+				a.list-group-item.active Invitations
+					if user.invitations && user.invitations.length
+						span.badge #{user.invitations.length}
+		.col-md-9
+			.panel.panel-primary
+				.panel-heading Invitations
+				.panel-body
+					ul
+						each inv in user.invitations
+							li: a(href="mailto:" + inv.email) #{inv.displayName}
+
